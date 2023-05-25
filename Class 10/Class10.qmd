@@ -1,0 +1,106 @@
+---
+title: "Class 10:Structural Bioinformatics"
+author: "Rogelio Castro"
+format: html
+editor: visual
+---
+
+# Comparative analysis of ADK
+ADK (Adenelate Kinase) is an important drug tarfet and we would love to know how it works- i.e. molecular mechanism.
+
+There has been lots of work done on this protein due to it's importance including lots of crystal structures.
+
+We will begin with getting an example ADK sequence from the database.
+We will then use this to find all ADK structures in the PDB.
+
+```{r}
+library(bio3d)
+
+aa <- get.seq("1AKE_A")
+aa
+```
+
+We can now run BLAST with this sequence:
+
+```{r}
+b <- blast.pdb(aa)
+```
+
+```{r}
+hits <- plot(b)
+```
+
+Let's see what is in our `hits` object:
+
+```{r}
+#hits$pdb.id
+```
+
+Now we can download all these PDB structures files:
+
+```{r}
+# Download releated PDB files
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+
+Now I want to allign and supperpose these structures which are all over the place.
+
+```{r}
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+
+
+Let's have a look at our `pdbs` object:
+
+```{r}
+pdbs
+```
+
+Now we have our aligned and superposed structures we can perform all sorts of analysis on them. Let's do PCA.
+
+
+```{r}
+# Perform PCA
+pc.xray <- pca(pdbs)
+plot(pc.xray)
+```
+
+We can luster the structures by RMSD
+
+```{r}
+rd <- rmsd(pdbs)
+
+# Structure-based clustering
+
+hc.rd<- hclust(dist(rd))
+grps.rd<- cutree(hc.rd, k=3)
+
+plot(pc.xray, 1:2, col="grey50", bg=grps.rd, pch=21, cex=1)
+```
+
+
+
+We can make a movie - also called trajectory of the major differences (i.e. structural displacements) of ADK.
+
+```{r}
+# Visualize first principal component
+pc1 <- mktrj(pc.xray, pc=1, file="pc_1.pdb")
+```
+
+>Q10. Which of the packages above is found only on BioConductor and not CRAN? 
+
+devtools::install_bitbucket("Grantlab/bio3d-view")
+
+>Q11. Which of the above packages is not found on BioConductor or CRAN?: 
+
+bio3d
+
+>Q12. True or False? Functions from the devtools package can be used to install packages from GitHub and BitBucket? 
+
+True
+
+>Q13. How many amino acids are in this sequence, i.e. how long is this sequence? 
+
+214
+
+
