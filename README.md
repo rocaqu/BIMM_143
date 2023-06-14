@@ -7,3 +7,4 @@ From class [BIMM143](https://bioboot.github.io/bimm143_S23)
 
 - **[Class 06: R Functions](https://github.com/rocaqu/BIMM_143/blob/main/Class06/class06.pdf)**     [source](https://github.com/rocaqu/BIMM_143/blob/main/Class06/class06.qmd)
 
+- **[Class 07: Introduction to Machine Learning](https://github.com/rocaqu/BIMM_143/blob/main/class07/Class07.pdf)**    [source](https://github.com/rocaqu/BIMM_143/blob/main/class07/Class07.qmd)
