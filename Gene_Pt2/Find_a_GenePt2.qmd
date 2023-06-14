@@ -1,0 +1,122 @@
+---
+title: "Find a Gene Pt.2"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(heatmaply)
+library(seqinr)
+
+```
+
+```{r}
+alignment <- read.alignment("/Users/rogeliocastro/Documents/Classes UCSD/BIMM 143/Gene_Pt2/aln-fasta.fasta", format = "fasta")
+```
+
+```{r}
+alignment_matrix <- as.matrix(alignment)
+
+```
+
+
+```{r}
+library(bio3d)
+
+msa <- read.fasta("/Users/rogeliocastro/Documents/Classes UCSD/BIMM 143/Gene_Pt2/aln-fasta.fasta")
+
+```
+
+```{r}
+identity_matrix <- seqidentity(msa)
+```
+
+```{r}
+heatmap(identity_matrix, col = colorRampPalette(c("white", "blue"))(100), xlab = "Sequence", ylab = "Sequence", main = "MSA Heatmap")
+
+```
+
+```{r}
+heatmap(identity_matrix, col = colorRampPalette(c("white", "blue"))(100), 
+        xlab = "Sequence", ylab = "Sequence", 
+        main = "MSA Heatmap", 
+        cex.axis = 0.8, cex.lab = 0.8, mar = c(10, 10))
+
+```
+
+
+```{r}
+library("rgl")
+```
+
+```{r}
+pdb_file <- "/Users/rogeliocastro/Downloads/5go9-pdb-bundle.tar.gz"
+
+```
+
+```{r}
+pdb_file <- "/Users/rogeliocastro/Downloads/5go9-pdb-bundle.tar.gz"
+temp_dir <- tempdir()  # Create a temporary directory
+untar(pdb_file, exdir = temp_dir)  # Extract the archive to the temporary directory
+
+```
+
+```{r}
+pdb_files <- list.files(temp_dir, pattern = "\\.pdb$", full.names = TRUE)
+
+```
+
+```{r}
+pdb_files <- list.files(temp_dir, pattern = "\\.pdb$", full.names = TRUE)
+
+# Read the first PDB file from the list
+pdb <- read.pdb(file = pdb_files[1])
+
+```
+
+```{r}
+pdb <- read.pdb(file = file.path(temp_dir, "5go9-pdb-bundle1.pdb"))
+
+pdb2 <- read.pdb(file = file.path(temp_dir, "5go9-pdb-bundle2.pdb"))
+
+```
+```{r}
+library(bio3d)
+```
+```{r}
+pdb <- read.pdb(file = file.path(temp_dir, "5go9-pdb-bundle1.pdb"))
+
+
+```
+
+
+```{r}
+library(bio3d)
+library(rgl)
+
+# Read the PDBx/mmCIF file using the read.cif() function from bio3d
+pdb <- read.cif("/Users/rogeliocastro/Downloads/5go9.cif")
+
+# Extract the atomic coordinates
+xyz <- pdb$atom$xyz
+
+# Open a 3D scene
+open3d()
+
+# Create a mesh object using the atomic coordinates
+mesh <- rgl::mesh3d(x = xyz[, 1], y = xyz[, 2], z = xyz[, 3])
+
+#White Background
+rgl::rgl.bg(color = "white")
+
+# Set the color of the mesh object
+rgl::shade3d(mesh, material = material3d(color = "blue"))
+
+# Adjust the view angle
+rgl::view3d(theta = 120, phi = 20, zoom = 0.8)
+
+# Save the 3D image as a snapshot
+rgl::snapshot3d(filename = "protein_image.png")
+
+```
+

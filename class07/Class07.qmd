@@ -1,0 +1,192 @@
+---
+title: "Class 7: Clustering and PCA"
+author: Rogelio Castro
+format: pdf
+---
+
+# Clustering
+
+First let's maeke up some data to cluster so we can get a feel for tese methods and how to work with them.
+
+We can use the `rnorm()` function to fet random numbers from a a normal distribution around a given `mean`. And `hist()` to get a histogram of said data.
+```{r}
+hist( rnorm(5000, mean = 3) )
+```
+
+
+Let's get 30 point with a mean of 3 and another 30 wiht a mean of -3.
+
+```{r}
+tmp <- c( rnorm(30, mean = -3), rnorm(30, mean = 3) )
+tmp
+```
+
+Put tow of these together:
+```{r}
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+```
+
+
+## K-means clustering.
+
+Very popular clusterring method that we can use witht the `kmeans()` function in base R.
+
+```{r}
+km <- kmeans(x, centers = 2)
+km
+```
+Q1. 30 and 30.
+Q2. `km$size` for cluster size
+```{r}
+km$size
+```
+
+
+`km$cluster` for cluster assingment 
+```{r}
+km$cluster
+```
+
+`km$centers` for centers
+```{r}
+km$centers
+```
+
+
+
+```{r}
+plot(x, col=km$cluster)
+points(km$centers, col= "blue", pch=15, cex=3)
+```
+
+> Q. Let's cluster into 3 groups or same `x` data and make a plot
+
+```{r}
+km <- kmeans(x, centers=4)
+plot(x, col=km$cluster)
+```
+
+#Hierarchical Clustering
+
+We can use `hcluster()` function for Hierarchical Clustering.
+Unlike `kmeans()`, where we could just pass in our data as input, we need to give `hclust()` a "distance matrix".
+
+We will use `dist()` function to start with/
+```{r}
+d<- dist(x)
+hc <- hclust(d)
+hc
+```
+
+```{r}
+plot(hc)
+```
+
+
+I can now "cut" my tree with the `cutree()` to yield a cluster membership vector.
+
+```{r}
+grps<- cutree(hc, h=8)
+grps
+```
+
+You can also tell `cutree()` to cut where it yields "k" groups.
+
+```{r}
+cutree(hc, k=2)
+```
+
+
+```{r}
+plot(x, col=grps)
+```
+
+# Principal Component Analysis (PCA)
+
+Use `row.names` to set the names of the foods to the columns
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names = 1)
+```
+
+>Q1. How many rows and columns are in your new data frame named x? What R functions could you use to answer this questions?
+17 rows and 5 columns but we want 4 columns, so we use `row.names` to eliminate the extra column by setting the food name to the row name.
+
+```{r}
+dim(x)
+```
+
+```{r}
+View(x)
+```
+
+
+>Q2. Which approach to solving the ‘row-names problem’ mentioned above do you prefer and why? Is one approach more robust than another under certain circumstances?
+I like the renaming of the rows, because it is simpler and can eliminate unnecessary rows.
+
+
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+```
+
+
+>Q3: Changing what optional argument in the above barplot() function results in the following plot?
+Change 'beside=T' to 'beside=F'
+
+
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+
+
+>Q5: Generating all pairwise plots may help somewhat. Can you make sense of the following code and resulting figure? What does it mean if a given point lies on the diagonal for a given plot?
+
+
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+
+>Q6. What is the main differences between N. Ireland and the other countries of the UK in terms of this data-set?
+The blue dot is considerably lower than the other countries.
+
+
+#PCA to the rescue!
+
+The main PCA funtion in base R is called `prcomp()` it expects the transpose of our data.
+```{r}
+pca <- prcomp( t(x) )
+summary(pca)
+```
+
+>Q7. Complete the code below to generate a plot of PC1 vs PC2. The second line adds text labels over the data points.
+
+```{r}
+attributes(pca)
+```
+
+```{r}
+pca$x
+```
+
+
+
+```{r}
+plot(pca$x[,1], pca$x[,2],
+     col=c("orange", "red", "blue", "darkgreen"),
+     pch=16)
+```
+
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500), col=c("orange", "red", "blue", "darkgreen"), pch=16)
+text(pca$x[,1], pca$x[,2], colnames(x), col=c("orange", "red", "blue", "darkgreen"))
+```
+
+
+
+
+
+
+
+

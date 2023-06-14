@@ -1,0 +1,199 @@
+---
+title: "R Functions Lab"
+author: "Rogelio Castro"
+format: pdf
+editor: visual
+---
+
+Student Grades:
+
+```{r}
+student1 <- c(100, 100, 100, 100, 100, 100, 100, 90)
+student2 <- c(100, NA, 90, 90, 90, 90, 97, 80) 
+student3 <- c(90, NA, NA, NA, NA, NA, NA, NA)
+```
+
+```{r}
+mean(student1)
+```
+
+We can use Mean to obtain the average of Student 1.
+
+```{r}
+mean(student2, na.rm=TRUE)
+```
+
+If we decide to use the same function `mean()` for Student 2 we get an error because there is a non-numeric value in NA. `na.rm()` will remove the NA an the output will be the average of the student without the NA value.
+
+What about student 3?
+
+```{r}
+mean(student3, na.rm=TRUE)
+```
+
+If we use the same code as Student 2 `mean(x, na.rm=TRUE)` we will not have a fair approach to grading since Student 3 only did 1 assignment worth 90%, and the others are missing. `na.rm=TRUE` is removing the missing assignments with NA values and only averaging the 90% assignment. Giving them a 90% for one assignment in all of the class.
+
+So how do we approach this? Find where the NA values are Using `is.na()` function might help
+
+```{r}
+student2
+is.na(student2)
+```
+
+`is.na()` is helping us to identify where the NA value is.
+
+```{r}
+student2[ is.na(student2) ]
+```
+
+`student2[is.na(student2)]` is helping us know if there is/are NA values and how many (spelled out)
+
+```{r}
+which( is.na(student2) )
+```
+
+`which(is.na(student2))` is helping us know if the numerical value of the NA values available
+
+```{r}
+student2[ is.na(student2) ] <-0
+student2
+```
+
+It is time to work with new temp object (that I will call `x`) so I don't screw up my original objects.
+
+```{r}
+x <- student3
+x[ is.na(x) ] <-0
+mean(x)
+```
+
+Finally we wan to drop the lowest score before calculating the mean. This is equivalent to allowing the students to drop their worst assignment score.
+
+```{r}
+x <- student1
+x
+x[ -which.min(x) ]
+```
+
+Now we put everything together to make the working snippet:
+
+```{r}
+x<- student3
+x
+
+# Map/Replace NA values to zero:
+x[ is.na(x)] <- 0
+
+#Exclude the lowest score and calculate the mean:
+mean( x[ -which.min(x) ] )
+
+```
+
+Cool! this works. Now let's turn it into a function called `grade()`
+
+All functions in R have at least 3 things:
+
+-   **Name**, in our case "grade"
+-   Input **arguments**, student 1 etc.
+-   **Body**, this is our working snippet above
+
+```{r}
+
+grade<- function(x) {
+
+# Map/Replace NA values to zero:
+x[ is.na(x)] <- 0
+
+#Exclude the lowest score and calculate the mean:
+mean( x[ -which.min(x) ] )
+}
+```
+
+Can I use the function now? Make sure to press the play button to let the machine know about function `grade(x)`
+
+```{r}
+grade(student1)
+```
+
+Read gradebook from online:
+
+```{r}
+hw <- read.csv("https://tinyurl.com/gradeinput", row.names = 1)
+hw
+```
+
+We can use the `apply()` function to grade all the students in this class with out new `grade()` function.
+
+The `apply()` functions allows us to run any function over with the rows or columns of a data.frame. Let's see how it works:
+
+```{r}
+ans <- apply(hw, 1, grade)
+ans
+```
+
+What we did was `apply(data (hw), margin (1 for rows and 2 for columns, function (grade) )`
+
+> Q2. Using your grade() function and the supplied gradebook, Who is the top scoring student overall in the gradebook? \[3pts\]
+
+```{r}
+ans[which.max(ans)]
+```
+
+> Q3. From your analysis of the gradebook, which homework was toughest on students (i.e. obtained the lowest scores overall? \[2pts\]
+
+```{r}
+apply(hw, 2, mean, na.rm=TRUE)
+```
+
+```{r}
+which.min( apply(hw, 2, mean, na.rm=TRUE) )
+```
+
+```{r}
+ave.scores <-apply(hw, 2, mean, na.rm=TRUE)
+which.min (ave.scores)
+```
+
+```{r}
+apply(hw, 2, sum, na.rm=TRUE)
+```
+
+```{r}
+tot.scores <- apply(hw, 2, sum, na.rm=TRUE)
+which.min( tot.scores)
+```
+
+```{r}
+tot.scores
+ave.scores
+```
+
+> Q4. Optional Extension: From your analysis of the gradebook, which homework was most predictive of overall score (i.e. highest correlation with average grade score)? \[1pt\]
+
+```{r}
+cor(hw$hw1, ans)
+cor(hw$hw3, ans)
+```
+
+If I try on hw2 I get Na as there are missing homeworks (i.e. NA values)
+
+```{r}
+hw$hw2
+```
+
+I will nask all NA values to zero.
+
+```{r}
+mask <- hw
+mask[ is.na(mask)]<- 0
+```
+
+```{r}
+cor(mask$hw5, ans)
+```
+
+We can use the `apply()` function here on the columns of hw (i.e. the individual homeworks) and pass it the overall scores for the class (in my `ans` object as an extra argument)
+
+```{r}
+apply(mask, 2, cor, y=ans)
+```
