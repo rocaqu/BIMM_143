@@ -7,4 +7,4 @@ From class [BIMM143](https://bioboot.github.io/bimm143_S23)
 
 
 
-theme: minimal
+> theme: minimal
