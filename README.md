@@ -14,3 +14,11 @@ From class [BIMM143](https://bioboot.github.io/bimm143_S23)
 - **[Class 09: Structural Bioinformatics](https://github.com/rocaqu/BIMM_143/blob/main/class09/class09.pdf)**    [source](https://github.com/rocaqu/BIMM_143/blob/main/class09/class09.qmd)
  
 - **[Class 10: Structural Bioinformatics](https://github.com/rocaqu/BIMM_143/blob/main/class09/class09.pdf)**    [source](https://github.com/rocaqu/BIMM_143/blob/main/Class%2010/Class10.qmd)
+
+- **[Class 11: Halloween Candy Mini-Project](https://github.com/rocaqu/BIMM_143/blob/main/Class%2011/HalloweenMini.pdf)**  [source](https://github.com/rocaqu/BIMM_143/blob/main/Class%2011/Class11.qmd)
+
+- **[Class 12: RNASeq Analysis](https://github.com/rocaqu/BIMM_143/blob/main/Class12/class12.pdf)**    [source](https://github.com/rocaqu/BIMM_143/blob/main/Class12/class12.qmd)
+
+- **[Class 13: Pathway Analysis](https://github.com/rocaqu/BIMM_143/blob/main/Class12/class13.pdf)**   [source](https://github.com/rocaqu/BIMM_143/blob/main/Class12/class13.qmd)
+
+- **[Class 17: Investigating Pertussis](https://github.com/rocaqu/BIMM_143/blob/main/Class17/Pertussis_MiniProj.pdf)**  [source](https://github.com/rocaqu/BIMM_143/blob/main/Class17/Pertussis_MiniProj.qmd)
